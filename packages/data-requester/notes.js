@@ -2,13 +2,34 @@ var environment = require('./environment');
 var api = require('./apiEndpoints');
 const axios = require('axios')
 
-async function addNote(name , username) {
+async function getNotes() {
+    let res ;
+    try{
+        res = await axios.get(environment.SITE_ADDRESS + "/" + api.notes.n);
+    } catch(e) {
+        return e
+    }
+    return res.data; 
+}
+async function addNote(name, username) {
     if(!name || !username) return
     let res ;
     try{
         res = await axios.post(environment.SITE_ADDRESS + "/" + api.notes.n,{
             name,
             username
+        });
+    } catch(e) {
+        return e
+    }
+    return res.data; 
+}
+async function updateNode(name , id) {
+    if(!name || !id) return []
+    let res ;
+    try{
+        res = await axios.put(environment.SITE_ADDRESS + "/" + api.notes.n+ "/" + id,{
+            name,
         });
     } catch(e) {
         return e
@@ -28,22 +49,7 @@ async function deleteNode(noteId) {
 }
 module.exports = {
     addNote,
-    deleteNode
+    deleteNode,
+    updateNode,
+    getNotes
 }
-
-// module.exports = (app, db) => {
-//     app.post('/notes', async (req, res) => {
-//         const { name , date, username } = req.body;
-        
-//         const result = await db.query(`INSERT INTO notes (name, date, username) VALUES ('${name}', ${date}, ${username}) returning _id;`)
-           
-//         res.end(JSON.stringify(result.rows));
-//     })
-
-//     app.delete('/notes/:id', async (req, res) => {
-//         const _id = req.params.id;
-//         const result = await db.query(`delete from notes where (_id = ${_id})`);
-
-//         res.end(JSON.stringify(result.rows));
-//     })
-// };
