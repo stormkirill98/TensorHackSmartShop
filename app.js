@@ -27,3 +27,5 @@ app.all('/', async (req, res) => {
 });
 
 app.listen(PORT);
+
+routes(app, client);
