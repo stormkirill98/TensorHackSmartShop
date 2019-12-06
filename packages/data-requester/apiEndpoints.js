@@ -4,5 +4,8 @@ module.exports = Object.freeze({
     },
     characteristics: {
         n: "characteristics"
+    },
+    notes: {
+        n: "notes"
     }
 });
