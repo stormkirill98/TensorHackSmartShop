@@ -1,5 +1,8 @@
 module.exports = Object.freeze({
     categories: {
-        categories: "categories"
+        n: "categories"
+    },
+    characteristics: {
+        n: "characteristics"
     }
 });

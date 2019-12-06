@@ -7,12 +7,7 @@ async function getCategories(name) {
     if(name){
         params["name"] = name;
     }
-    let res;
-    try{
-        res = await axios.get(environment.SITE_ADDRESS + "/" + api.categories.n, {params});
-    } catch(e){
-        return e
-    }
+    let res = await axios.get(environment.SITE_ADDRESS + "/" + api.categories.n, params);
     return res.data; 
     
 }
