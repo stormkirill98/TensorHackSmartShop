@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Button, FlatList, Text, StyleSheet, Image } from 'react-native';
-import {  SwipeListView } from 'react-native-swipe-list-view';
 import { purchaseRequester } from 'data-requester';
 
 
@@ -27,14 +26,20 @@ class Purchase extends React.Component {
     }
 
     async refresh (){
+      console.log('id -----> ',this.props.navigation.getParam('noteID'))
       this.setState({
-        data: await purchaseRequester.getBestPurchase(55)
+        data: await purchaseRequester.getBestPurchase(this.props.navigation.getParam('noteID'))
       })
     }
 
     static navigationOptions = {
       title: 'Корзина',
     };
+    deleteProduct = async (id) => {
+      await purchaseRequester.deletePurchase(id)
+      console.log('delete--->', id)
+      await this.refresh()
+    }
     itemRenderProducts = ({item}) => {
       return(
         <View style={styles.item}>
@@ -48,14 +53,17 @@ class Purchase extends React.Component {
             <Text style={{marginVertical: 8, fontSize: 20}}> {item.name} </Text>
             <Text style={{marginVertical: 8, fontSize: 15}}> {item.characteristics}</Text>
             <View style={{marginVertical: 8, flex: 1, flexDirection: 'row', alignItems: 'baseline'}}>
-              <Text style={{ fontSize: 20, fontWeight: 'bold'}}> {item.price}₽</Text>
-              <Text style={{ fontSize: 16, textDecorationLine: 'line-through'}}> {item.stock_price}₽</Text>
+              <Text style={{ fontSize: 20, fontWeight: 'bold'}}> {item.stock_price}₽</Text>
+              <Text style={{ fontSize: 16, textDecorationLine: 'line-through'}}> {item.price}₽</Text>
             </View>
+          </View>
+          <View style={{position: "absolute", right: 10, top: 10}}>
+            <Text style={{ fontSize: 10, fontWeight: 'bold'}}> {item.count}шт</Text>
           </View>
           <View style={{position: "absolute", right: 10, bottom: 10}}>
             <Button 
               title="удалить"
-              onPress={() => console.log('Simple Button pressed')}
+              onPress={() => this.deleteProduct(item.purchase_id)}
               color="#d04d4d"
             />
           </View>
@@ -70,7 +78,7 @@ class Purchase extends React.Component {
             <Text>{item.name}</Text>
           </View>
           <View style={styles.products}>
-              <FlatList
+            <FlatList
               data={item.products}
               renderItem={ this.itemRenderProducts }
               keyExtractor={item => item.name}
@@ -86,7 +94,7 @@ class Purchase extends React.Component {
       <View style={styles.mainblock}>
         <Button
           title="Добавить продукт"
-          onPress={() => navigate('Products')}
+          onPress={() => navigate('Products', {noteID: this.props.navigation.getParam('noteID')})}
         />
         
           <FlatList
