@@ -8,5 +8,4 @@ module.exports = {
     noteRequester: notes
 }
 
-notes.getNotes().then(x=>
-    console.log(x))
+a
