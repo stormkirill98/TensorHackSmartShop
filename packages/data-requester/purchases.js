@@ -28,7 +28,21 @@ async function getBestPurchase(noteId) {
     }
     return res.data; 
 }
+
+async function deletePurchase(purchaseId) {
+    purchaseId = parseInt(purchaseId)
+    if(!purchaseId) return
+    let res ;
+    try{
+        res = await axios.delete(environment.SITE_ADDRESS + "/" + api.purchases.n + "/" + purchaseId);
+    } catch(e) {
+        return e
+    }
+    return res.data;
+}
+
 module.exports = {
     addPurchase,
-    getBestPurchase
+    getBestPurchase,
+    deletePurchase
 }

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 import './styles/App.css';
 
-import {categoryRequester, characteristicRequester, noteRequester, purchaseRequester} from 'data-requester'
+import {categoryRequester, characteristicRequester, purchaseRequester} from 'data-requester'
 
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -26,188 +26,22 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 
-var data = {
- getPurchases: function() {
-   return [
-     {
-       title:'Пятер_очка',
-       goods:[
-         {
-           img: 'https://irecommend.ru/sites/default/files/product-images/177327/molokorek.jpg',
-           id: 1,
-           name: 'Молоко Домик в деревне',
-           cost: 85.50,
-           quantity: 0.9,
-           unit:'литр(а)',
-           sale: 30,
-         },
-         {
-           id: 2,
-           name: 'яйцо столовое Дедушкины яйца',
-           cost: 84.90,
-           quantity: 10,
-           unit:'штук',
-           sale: 0
-         },
-         {
-           id: 3,
-           name: 'хлеб',
-           cost: 15,
-           quantity: 1,
-           unit:'буханка',
-           sale: 20
-         },
-         {
-           id: 2,
-           name: 'яйцо столовое Дедушкины яйца',
-           cost: 84.90,
-           quantity: 10,
-           unit:'штук',
-           sale: 0
-         },
-         {
-           id: 2,
-           name: 'яйцо столовое Дедушкины яйца',
-           cost: 84.90,
-           quantity: 10,
-           unit:'штук',
-           sale: 0
-         },
-         {
-           id: 2,
-           name: 'яйцо столовое Дедушкины яйца',
-           cost: 84.90,
-           quantity: 10,
-           unit:'штук',
-           sale: 0
-         },
-         {
-           id: 2,
-           name: 'яйцо столовое Дедушкины яйца',
-           cost: 84.90,
-           quantity: 10,
-           unit:'штук',
-           sale: 0
-         },
-         {
-           id: 2,
-           name: 'яйцо столовое Дедушкины яйца',
-           cost: 84.90,
-           quantity: 10,
-           unit:'штук',
-           sale: 0
-         },
-         {
-           id: 2,
-           name: 'яйцо столовое Дедушкины яйца',
-           cost: 84.90,
-           quantity: 10,
-           unit:'штук',
-           sale: 0
-         },
-         {
-           id: 2,
-           name: 'яйцо столовое Дедушкины яйца',
-           cost: 84.90,
-           quantity: 10,
-           unit:'штук',
-           sale: 0
-         }
-
-       ]
-     },
-     {
-       title:'Перекрёсток',
-       goods:[
-         {
-           img: 'https://irecommend.ru/sites/default/files/product-images/177327/molokorek.jpg',
-           id: 1,
-           name: 'Молоко Домик в деревне',
-           cost: 102.50,
-           quantity: 0.9,
-           unit:'литр(а)',
-           sale: 30,
-         },
-         {
-           id: 2,
-           name: 'Творожок',
-           cost: 64.90,
-           quantity: 10,
-           unit:'штук',
-           sale: 5
-         },
-         {
-           id: 3,
-           name: 'хлеб',
-           cost: 15,
-           quantity: 1,
-           unit:'буханка',
-           sale: 20
-         }
-
-       ]
-     }
-    ]
- },
- Found: function (pro) {
-
-
-
- let prod=pro||"";
- let arr =[
- {
- id: 1,
- name:'Молоко '
- },
- {
- id: 2,
-
- name: 'яйцо столовое '
- },
- {
- id: 3,
- name: 'хлеб'
- },
- {
- id: 4,
- name : 'чай'
-
- },
- {
- id: 5,
- name: 'сыр'
- }
-
- ]
- let mass=[];
- if(prod=="")
- {
- return arr;
- }
- else
- {
- prod= prod.toLowerCase() ;
- for(var i=0;i<arr.length;i++)
- {
- let lowname=arr[i].name;
- lowname= lowname.toLowerCase();
-
- if(lowname.indexOf(prod) !=-1)
- {
- mass.push(arr[i]);
- }
- }
- return mass;
-}
-}
-}
 export default class App extends Component {
-  
+  // async GetId(id) {
+  //   this.setState({
+  //     mode: 0
+  //   })
+  //   //ЗАПРОС ДЛЯ ВЫВОДА (ЖИРНОСТЬ, ОБЬЕМ и т.д.) БУДЕТ ТУТ
+    // const characteristics = await characteristicRequester.getCharacteristicsByCategoryId(id);
+    // this.setState({
+    //   dataInputAboutProducts: characteristics
+    // })
+  // };
 
   constructor() {
     super();
     this.state={
-      shop:data.getPurchases(), open: false, 
+      shop:[], open: false, 
       categories: [],
       mode: 1,
       characteristics: []
@@ -219,14 +53,20 @@ handleClickOpen = () => {
 };
 
 handleClose = () => {
-  this.setState({open:false});
-  window.location.reload();
+  debugger;
+  const mode = this.state.mode
+  if(mode === 0) {
+    this.setState({mode: mode+1});
+  } else {
+    this.setState({open:false});
+  }
 };
- componentWillMount() {
-categoryRequester.getCategories().then((categories)=>{
-   this.setState({categories});
-  });
-
+async componentWillMount() {
+  debugger
+  const purchase = await purchaseRequester.getBestPurchase(27)
+  this.setState({shop:purchase});
+  const categories = await categoryRequester.getCategories();
+  this.setState({categories});
 
 }
 async onCategoryClickHandler(id){
@@ -239,6 +79,10 @@ render() {
   let list;
   if (this.state.mode == 1) {
     list = <List>
+      
+      <ListItem>
+              <input class='input_search' type='text' onChange/>
+            </ListItem>
     {this.state.categories.map(Category => (    
       <ListItem button  key={Category.name} onClick={(e) => {this.onCategoryClickHandler(Category._id)}}>  
         {`${Category.name}`}
@@ -248,10 +92,10 @@ render() {
      </List>
   } else {
     list = <List>
+      
     {this.state.characteristics.map(Ch_name => (  
       <ListItem button key={Ch_name.name}>   
         {`${Ch_name.name}`}
-        <a>&nbsp;</a><input type='text'/>
         <Divider/>
         </ListItem>
     ))}
@@ -285,9 +129,6 @@ render() {
             </Toolbar>
           </AppBar>
           <List>
-            <ListItem>
-              <input class='input_search' type='text'/>
-            </ListItem>
             <Divider/> 
            
               {list}
@@ -304,17 +145,17 @@ render() {
   
           <List className='root' subheader={<li/>}>
           {this.state.shop.map(item => (
-          <li key={`section-${item.title}`} className='ListSection'>
+          <li key={`section-${item.name}`} className='ListSection'>
           <ul>
-          <ListSubheader>{`${item.title}`}</ListSubheader>
-          {item.goods.map(item => (
-          <ListItem key={`${item.goods}-${item}`}>
+          <ListSubheader>{`${item.name}`}</ListSubheader>
+          {item.products.map(item => (
+          <ListItem key={`${item.products}-${item}`}>
   
   
           <List className=''>
               <ListItem alignItems="flex-start">
                   <ListItemAvatar>
-                      <Avatar  src={`${item.img}`} />
+                      <Avatar  src={`${item.logo}`} />
                   </ListItemAvatar>
                       <ListItemText
                           primary={`${item.name}`}
@@ -323,13 +164,13 @@ render() {
                               <Typography
                                 component="span"
                                 color="textPrimary"
-                              >
-                          {item.sale != 0 &&
-                            <a>{`${item.cost/100*(100-item.sale)}₽`} <s>{`${item.cost}₽`}</s></a>}
-                          {item.sale == 0 &&
-                              <a>{`${item.cost}₽`}</a>}
+                              >                          
+                              {item.stock_price && item.stock_price < item.price &&
+                                <a>{`${item.stock_price}₽`} <s>{`${item.price}₽`}</s></a>}
+                              {!item.stock_price &&
+                                  <a>{`${item.price}₽`}</a>}
                             </Typography>
-                          &nbsp;{`${item.quantity} ${item.unit}`}
+                          &nbsp;{`Количество: ${item.count}`}
                               </React.Fragment>
                           }
                       />
@@ -342,6 +183,22 @@ render() {
                   </ul>
                 </li>
               ))}
+              <ListItemText
+                          primary="Total:"
+                          secondary={
+                              <React.Fragment>
+                              <Typography
+                                component="span"
+                                color="textPrimary"
+                              >              
+                              {this.state.shop.total_price &&           
+                                  <a>{`${this.state.shop.total_price}₽`}</a>}
+                                  {!this.state.shop.total_price &&           
+                                      <a>{`0 ₽`}</a>}
+                            </Typography>
+                              </React.Fragment>
+                          }
+                      />
           </List>
   
   

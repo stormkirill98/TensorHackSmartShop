@@ -1,3 +1,3 @@
 module.exports = Object.freeze({
-    SITE_ADDRESS: "https://tensor-hack-smart-shop.herokuapp.com",
+    SITE_ADDRESS: "localhost:5000",
 });
