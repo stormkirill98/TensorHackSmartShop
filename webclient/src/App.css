@@ -1,0 +1,80 @@
+.App {
+  text-align: center;
+  background-image: url(http://www.ruby.construction/wp-content/uploads/2014/03/blurred-bg.jpg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.root {
+  padding: 0,;
+  width: 100%;
+
+  position: relative;
+  overflow: auto;
+}
+
+.App-content ul {
+  padding: 0;
+}
+
+.ListSection {
+  background-color: inherit;
+}
+
+.App-header {
+  background-color: rgba(204, 238, 204, 0.5);
+  border: 1px solid rgba(204, 238, 204, 0.5);
+  border-radius: 10px;
+  width: 84%;
+  margin-left: 7%;
+  margin-right: 7%;
+  margin-bottom: 1%;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  font-size: 2em;;
+  color: #ed3caa;
+}
+
+.App-content {
+  background-color: rgba(204, 238, 204, 0.5);
+  border: 1px solid rgba(204, 238, 204, 0.5);
+  border-radius: 10px;
+  width: 84%;
+  margin-left: 7%;
+  margin-right: 7%;
+  margin-bottom: 1%;
+  min-height: 800px;
+}
+
+.footer {
+  background-color: rgba(204, 238, 204, 0.5);
+  border: 1px solid rgba(204, 238, 204, 0.5);
+  border-radius: 10px;
+  width: 84%;
+  margin-left: 7%;
+  margin-right: 7%;
+  height: 30px;
+
+}
+.list {
+
+    list-style-type: none;
+   }
+
+.hueta {
+  background-color: #eee;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
