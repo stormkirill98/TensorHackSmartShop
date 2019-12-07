@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 import './styles/App.css';
 
-import {categoryRequester, characteristicRequester} from 'data-requester'
+import {categoryRequester, characteristicRequester, noteRequester, purchaseRequester} from 'data-requester'
 
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -202,16 +202,7 @@ var data = {
 }
 }
 export default class App extends Component {
-  // async GetId(id) {
-  //   this.setState({
-  //     mode: 0
-  //   })
-  //   //ЗАПРОС ДЛЯ ВЫВОДА (ЖИРНОСТЬ, ОБЬЕМ и т.д.) БУДЕТ ТУТ
-    // const characteristics = await characteristicRequester.getCharacteristicsByCategoryId(id);
-    // this.setState({
-    //   dataInputAboutProducts: characteristics
-    // })
-  // };
+  
 
   constructor() {
     super();
@@ -231,9 +222,11 @@ handleClose = () => {
   this.setState({open:false});
   window.location.reload();
 };
-async componentWillMount() {
-  const categories = await categoryRequester.getCategories();
-  this.setState({categories});
+ componentWillMount() {
+categoryRequester.getCategories().then((categories)=>{
+   this.setState({categories});
+  });
+
 
 }
 async onCategoryClickHandler(id){
