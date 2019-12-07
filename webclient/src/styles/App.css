@@ -1,12 +1,7 @@
 .App {
   text-align: center;
   background-image: url(http://www.ruby.construction/wp-content/uploads/2014/03/blurred-bg.jpg);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+background-attachment:fixed;
 }
 
 .root {
@@ -61,14 +56,34 @@
   height: 30px;
 
 }
+
 .list {
 
     list-style-type: none;
    }
 
-.hueta {
-  background-color: #eee;
+#closebutton {
+  margin-left: 80%;
+  color: #000033; 
 }
+
+.classes-title {
+  margin-Left: theme-spacing(2);
+  flex: 1;
+  font-size: 2em;
+}
+.appBar {
+  position: 'relative';
+  color: #000033; 
+  background-color: #aafcdd;
+}
+
+.input_search {
+  width: 100%;
+  min-height: 20px;
+}
+
+
 
 @keyframes App-logo-spin {
   from {
@@ -76,5 +91,10 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
   }
 }

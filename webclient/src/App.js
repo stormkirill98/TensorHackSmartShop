@@ -1,6 +1,9 @@
-import React from 'react';
-import './App.css';
-import foundDataProducts from './FoundDataProducts.js';
+import React, {Component} from 'react';
+
+import './styles/App.css';
+import foundDataProducts from './assets/FoundDataProducts.js';
+
+import {categoryRequester, characteristicRequester} from 'data-requester'
 
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -11,6 +14,12 @@ import Divider from '@material-ui/core/Divider';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Slide from '@material-ui/core/Slide';
 
 
 var data = {
@@ -188,71 +197,143 @@ var data = {
 }
 }
 }
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
+export default class App extends Component {
+constructor() {
+  super();
+  this.state={
+    shop:data.getPurchases(), open: false, 
+    categories: []
+  }
+}
 
-export default function App() {
-var Shop = data.getPurchases();
-return (
-	<div className="App">
-    <header className="App-header">
-        <h3>Smart Shop</h3>
-    </header>
+handleClickOpen = () => {
+  this.setState({open:true});
+};
 
-    <div class="App-content">
-        <button name='OK' onClick='AddProduct()'>Добавить продукт</button>
-        <input  type="text" name="name" />
-        <List className='root' subheader={<li />}>
-        {Shop.map(item => (
-        <li key={`section-${Shop.title}`} className='ListSection'>
-        <ul>
-        <ListSubheader>{`${item.title}`}</ListSubheader>
-        {item.goods.map(item => (
-        <ListItem key={`${Shop.goods}-${item}`}>
+handleClose = () => {
+  this.setState({open:false});
+};
+async componentWillMount() {
+  const categories = await categoryRequester.getCategories();
+  this.setState({categories});
+}
 
+render() {
+  return (
 
-        <List className=''>
-            <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                    <Avatar  src={`${item.img}`} />
-                </ListItemAvatar>
-                    <ListItemText
-                        primary={`${item.name}`}
-                        secondary={
-                            <React.Fragment>
-                            <Typography
-                            	component="span"
-                            	color="textPrimary"
-                            >
-                        {item.sale != 0 &&
-                        	<a>{`${item.cost/100*(100-item.sale)}₽`} <s>{`${item.cost}₽`}</s></a>}
-                        {item.sale == 0 &&
-                            <a>{`${item.cost}₽`}</a>}
-                        	</Typography>
-                        &nbsp;{`${item.quantity} ${item.unit}`}
-                            </React.Fragment>
-                        }
-                    />
-				            </ListItem>
-		    </List>
-
-
-                    </ListItem>
-                  ))}
-                </ul>
-              </li>
-            ))}
-        </List>
-
-
-    </div>
-
-
-      <div class='footer'>
-        2019
+    <div className="App">
+      <header className="App-header">
+          <h3>Smart Shop</h3>
+      </header>
+  
+      <div class="App-content">
+  
+  
+      <div>
+        <Button variant="outlined" onClick={this.handleClickOpen}>
+          Добавить продукт
+        </Button>
+        <Dialog fullScreen open={this.state.open} onClose={this.handleClose} TransitionComponent={Transition}>
+          <AppBar class='appBar'>
+            <Toolbar>
+              <Typography variant="h3" class='classes.title'>
+                Список товаров
+              </Typography>
+  
+              <Button id='closebutton' edge="start" color="inherit" onClick={this.handleClose} aria-label="close" >
+                Закрыть
+              </Button>
+            </Toolbar>
+          </AppBar>
+          <List>
+            <ListItem>
+              <input class='input_search' type='text'/>
+            </ListItem>
+            <Divider/> 
+              {this.state.categories.map(Category => (
+                
+                <ListItem button key={Category.name} 
+                ><Divider/>
+                  
+                  {`${Category.name}`}
+                  <Divider/>
+                  </ListItem>
+              ))}
+            
+            <Divider/> 
+   
+  
+  
+  
+          </List>
+        </Dialog>
       </div>
+  
+  
+  
+          <List className='root' subheader={<li/>}>
+          {this.state.shop.map(item => (
+          <li key={`section-${item.title}`} className='ListSection'>
+          <ul>
+          <ListSubheader>{`${item.title}`}</ListSubheader>
+          {item.goods.map(item => (
+          <ListItem key={`${item.goods}-${item}`}>
+  
+  
+          <List className=''>
+              <ListItem alignItems="flex-start">
+                  <ListItemAvatar>
+                      <Avatar  src={`${item.img}`} />
+                  </ListItemAvatar>
+                      <ListItemText
+                          primary={`${item.name}`}
+                          secondary={
+                              <React.Fragment>
+                              <Typography
+                                component="span"
+                                color="textPrimary"
+                              >
+                          {item.sale != 0 &&
+                            <a>{`${item.cost/100*(100-item.sale)}₽`} <s>{`${item.cost}₽`}</s></a>}
+                          {item.sale == 0 &&
+                              <a>{`${item.cost}₽`}</a>}
+                            </Typography>
+                          &nbsp;{`${item.quantity} ${item.unit}`}
+                              </React.Fragment>
+                          }
+                      />
+                      </ListItem>
+          </List>
+  
+  
+                      </ListItem>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+          </List>
+  
+  
+      </div>
+  
+  
+        <div class='footer'>
+          2019
+        </div>
+  
+      </div>
+  
+  
+    );
+}
 
-    </div>
 
 
-  );
+
+
+
 }
