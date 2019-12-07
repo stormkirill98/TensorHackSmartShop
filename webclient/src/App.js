@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import './FoundDataProducts.js';
+import foundDataProducts from './FoundDataProducts.js';
 
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
