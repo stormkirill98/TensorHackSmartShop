@@ -13,10 +13,10 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.listen(PORT);
 
+routes(app);
+
 app.use(express.static(path.join(__dirname, 'webclient/build')));
 
 app.use((req, res) => {
     res.sendFile(path.join(__dirname, 'webclient/build', 'index.html'));
 });
-
-routes(app);
