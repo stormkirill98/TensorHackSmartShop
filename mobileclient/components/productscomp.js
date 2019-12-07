@@ -1,45 +1,53 @@
 import React from 'react';
 import {View, Text, TextInput, FlatList, StyleSheet, TouchableHighlight} from 'react-native';
-import foundDataProducts from '../data/foundDataProducts';
-import aboutDataProducts from '../data/aboutDataProducts';
-
+// import foundDataProducts from '../data/foundDataProducts';
+// import aboutDataProducts from '../data/aboutDataProducts';
+import {categoryRequester, characteristicRequester} from 'data-requester'
 
 class Products extends React.Component {
   constructor(props){
     super(props)
     this.state = {
+      //строка для поиска продуктов
       str: '',
+      //строка для вставки информации об продуктов
       strForAbout: '',
+
+      //список для нахождения продуктов по поиску
       dataFoundProducts: [],
+      //список для вывода критерий об продукте (например жирность и т.д.)
       dataInputAboutProducts: [],
+
+      //переменная для перехода
       mode: 1,
     }
   }
 
-  onChangeTextSearchProducts = (value) =>{
+
+  async componentWillMount(){
+    //запрос через либу для вывода категорий по дефолту
+    const dataCategoryRequester = await categoryRequester.getCategories();
+    // console.log('dataCategoryRequester = ',dataCategoryRequester)
     this.setState({
-      str: value,
-      dataFoundProducts: foundDataProducts.getcategories(value)
+      dataFoundProducts: dataCategoryRequester
     })
   }
-  componentWillMount(){
-    this.setState({
-      dataFoundProducts: foundDataProducts.getcategories(),
-      dataInputAboutProducts: aboutDataProducts.getAboutProduct()
-    })
-  }
-  onPress = (id) => {
+  
+  onPress = async (id) => {
     this.setState({
       mode: 0
     })
     //ЗАПРОС ДЛЯ ВЫВОДА (ЖИРНОСТЬ, ОБЬЕМ и т.д.) БУДЕТ ТУТ
-
+    const datacharacteristic = await characteristicRequester.getCharacteristicsByCategoryId(id);
+    this.setState({
+      dataInputAboutProducts: datacharacteristic
+    })
   }
 
   itemRender = ({item}) =>{
     return(
         <TouchableHighlight
-        onPress={() => this.onPress(item.id)}>
+        onPress={() => this.onPress(item._id)}>
           <View style={styles.item}><Text>{item.name}</Text></View>
         </TouchableHighlight>
     )
@@ -49,7 +57,6 @@ class Products extends React.Component {
     const index = this.state.dataInputAboutProducts.indexOf(item);
     const newList = [...this.state.dataInputAboutProducts];
     newList[index].value = value;
-    console.log(newList)
     this.setState({
       dataInputAboutProducts: newList
     })
@@ -68,6 +75,17 @@ class Products extends React.Component {
     )
   }
 
+  //Поиск в инпуте продукта
+  onChangeTextSearchProducts = async (value) => {
+    this.setState({
+      str: value
+    })
+    //запрос через либу для вовода категорий по поиску
+    const data = await categoryRequester.getCategories(value);
+    this.setState({
+      dataFoundProducts: data
+    })
+  }
   render() {
     let list ;
     if (this.state.mode == 1) {
@@ -78,7 +96,7 @@ class Products extends React.Component {
               />
     } else {
       list = <View>
-              <Text>sdfsdf</Text>
+              <Text>задать тип продукта</Text>
               <FlatList
                 data={this.state.dataInputAboutProducts}
                 renderItem={ this.itemRenderAboutProducts }
