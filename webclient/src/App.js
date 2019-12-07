@@ -258,6 +258,7 @@ render() {
     {this.state.characteristics.map(Ch_name => (  
       <ListItem button key={Ch_name.name}>   
         {`${Ch_name.name}`}
+        <a>&nbsp;</a><input type='text'/>
         <Divider/>
         </ListItem>
     ))}
@@ -292,7 +293,7 @@ render() {
           </AppBar>
           <List>
             <ListItem>
-              <input class='input_search' type='text' onChange/>
+              <input class='input_search' type='text'/>
             </ListItem>
             <Divider/> 
            
