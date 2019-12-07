@@ -1,8 +1,6 @@
 import React from 'react';
-import {View, Text, TextInput, FlatList, StyleSheet, TouchableHighlight} from 'react-native';
-// import foundDataProducts from '../data/foundDataProducts';
-// import aboutDataProducts from '../data/aboutDataProducts';
-import {categoryRequester, characteristicRequester} from 'data-requester'
+import {View, Text, TextInput, FlatList, StyleSheet, TouchableHighlight, Button} from 'react-native';
+import {categoryRequester, characteristicRequester, purchaseRequester} from 'data-requester';
 
 class Products extends React.Component {
   constructor(props){
@@ -23,9 +21,8 @@ class Products extends React.Component {
     }
   }
 
-
   async componentWillMount(){
-    //запрос через либу для вывода категорий по дефолту
+    // запрос через либу для вывода категорий по дефолту
     const dataCategoryRequester = await categoryRequester.getCategories();
     // console.log('dataCategoryRequester = ',dataCategoryRequester)
     this.setState({
@@ -33,21 +30,25 @@ class Products extends React.Component {
     })
   }
   
-  onPress = async (id) => {
+  onPress = async (id, name) => {
     this.setState({
-      mode: 0
+      mode: 0,
+      //Айди категории, которую мы выбрали
+      categoryID: id,
     })
     //ЗАПРОС ДЛЯ ВЫВОДА (ЖИРНОСТЬ, ОБЬЕМ и т.д.) БУДЕТ ТУТ
+    // console.log('characteristicRequester--->', characteristicRequester)
     const datacharacteristic = await characteristicRequester.getCharacteristicsByCategoryId(id);
     this.setState({
-      dataInputAboutProducts: datacharacteristic
+      dataInputAboutProducts: datacharacteristic,
+      str: name
     })
   }
 
   itemRender = ({item}) =>{
     return(
         <TouchableHighlight
-        onPress={() => this.onPress(item._id)}>
+          onPress={() => this.onPress(item._id, item.name)}>
           <View style={styles.item}><Text>{item.name}</Text></View>
         </TouchableHighlight>
     )
@@ -67,7 +68,7 @@ class Products extends React.Component {
         <View style={styles.item}>
           <Text>{item.name}</Text>
           <TextInput
-            style={{ height: 40, borderColor: 'gray', borderWidth: 1}}
+            style={{ height: 40, borderColor: '#dcdcdc', borderWidth: 1, marginVertical: 8}}
             onChangeText={(value) => this.onChangeTextSearchAboutProdct(value, item)}
             value={item.value}
           />
@@ -75,17 +76,16 @@ class Products extends React.Component {
     )
   }
 
-  //Поиск в инпуте продукта
-  onChangeTextSearchProducts = async (value) => {
-    this.setState({
-      str: value
-    })
-    //запрос через либу для вовода категорий по поиску
-    const data = await categoryRequester.getCategories(value);
-    this.setState({
-      dataFoundProducts: data
-    })
-  }
+  onPressButtonForAddProduct = () => {
+    // let forRequestDataInputAboutProducts;
+    // for(let i=0; i<this.state.dataInputAboutProducts.length; i++){
+    //   forRequestDataInputAboutProducts = this.state.dataInputAboutProducts
+    // }
+    // console.log(forRequestDataInputAboutProducts)
+    
+    purchaseRequester.addPurchase(53, this.state.categoryID, this.state.dataInputAboutProducts)
+  } 
+
   render() {
     let list ;
     if (this.state.mode == 1) {
@@ -96,7 +96,11 @@ class Products extends React.Component {
               />
     } else {
       list = <View>
-              <Text>задать тип продукта</Text>
+              <Button
+                title="Добавить продукт"
+                onPress={this.onPressButtonForAddProduct}
+              />
+              <Text style={{marginVertical: 8, marginHorizontal: 15}}>Заполните поля:</Text>
               <FlatList
                 data={this.state.dataInputAboutProducts}
                 renderItem={ this.itemRenderAboutProducts }
@@ -105,25 +109,50 @@ class Products extends React.Component {
             </View>
     }
     return (
-    <View>
-        <Text>Найти продукты:</Text>
+    <View style={styles.mainblock}>
+
+        <View style={styles.containerSearchCategory}>
+          <Text>Найти:</Text>
           <TextInput
-            style={{ height: 40, borderColor: 'gray', borderWidth: 1}}
+            style={{ height: 50, borderColor: '#dcdcdc', backgroundColor: '#fff', borderWidth: 1, marginVertical: 8}}
             onChangeText={this.onChangeTextSearchProducts}
             value={this.state.str}
           />
+          </View>
         <View >
           {list}
         </View>
     </View>
     )
   }
+
+
+    //Поиск в инпуте продукта
+    onChangeTextSearchProducts = async (value) => {
+      this.setState({
+        str: value
+      })
+      //запрос через либу для вывода категорий по поиску
+      const data = await categoryRequester.getCategories(value);
+      
+      this.setState({
+        dataFoundProducts: data,
+        mode: 1
+      })
+    }
 }
 
 const styles = StyleSheet.create({
-
+  mainblock: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+    padding: 20
+  },
+  containerSearchCategory: {
+    padding: 15
+  },
   item: {
-    backgroundColor: '#c0c0c0',
+    backgroundColor: '#fff',
     padding: 20,  
     marginVertical: 8,
     marginHorizontal: 16,
