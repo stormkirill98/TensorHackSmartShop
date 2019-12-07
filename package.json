@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "build": "cd webclient & npm i & npm run build"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "group-by": "0.0.1",
+    "path": "^0.12.7",
     "pg": "^7.14.0",
     "pg-format": "^1.0.4"
   }
