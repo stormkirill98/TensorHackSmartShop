@@ -7,5 +7,8 @@ module.exports = Object.freeze({
     },
     notes: {
         n: "notes"
+    },
+    purchases: {
+        n: "purchases"
     }
 });
