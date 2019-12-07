@@ -17,6 +17,17 @@ async function addPurchase(note_id, category_id, characteristics) {
     }
     return res.data; 
 }
+async function getBestPurchase(noteId) {
+    if(!noteId) return []
+    let res;
+    try{ 
+        res = await axios.get(environment.SITE_ADDRESS + "/" + api.purchases.n + "/" + noteId);
+    }catch(e){
+        return e
+    }
+    return res.data; 
+}
 module.exports = {
-    addPurchase
+    addPurchase,
+    getBestPurchase
 }
