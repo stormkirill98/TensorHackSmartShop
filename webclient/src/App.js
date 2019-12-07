@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 
 import './styles/App.css';
-import foundDataProducts from './assets/FoundDataProducts.js';
 
-import {categoryRequester, characteristicRequester} from 'data-requester'
+import {categoryRequester, characteristicRequester, noteRequester, purchaseRequester} from 'data-requester'
 
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -18,8 +17,13 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
+
 import Slide from '@material-ui/core/Slide';
+
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 
 var data = {
@@ -197,32 +201,63 @@ var data = {
 }
 }
 }
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 export default class App extends Component {
-constructor() {
-  super();
-  this.state={
-    shop:data.getPurchases(), open: false, 
-    categories: []
-  }
-}
+  
 
+  constructor() {
+    super();
+    this.state={
+      shop:data.getPurchases(), open: false, 
+      categories: [],
+      mode: 1,
+      characteristics: []
+    }
+  }
+  
 handleClickOpen = () => {
   this.setState({open:true});
 };
 
 handleClose = () => {
   this.setState({open:false});
+  window.location.reload();
 };
-async componentWillMount() {
-  const categories = await categoryRequester.getCategories();
-  this.setState({categories});
+ componentWillMount() {
+categoryRequester.getCategories().then((categories)=>{
+   this.setState({categories});
+  });
+
+
+}
+async onCategoryClickHandler(id){
+  const characteristics = await characteristicRequester.getCharacteristicsByCategoryId(id)
+  this.setState({characteristics, mode: 0})
 }
 
 render() {
+
+  let list;
+  if (this.state.mode == 1) {
+    list = <List>
+    {this.state.categories.map(Category => (    
+      <ListItem button  key={Category.name} onClick={(e) => {this.onCategoryClickHandler(Category._id)}}>  
+        {`${Category.name}`}
+        <Divider/>
+        </ListItem>
+    ))}
+     </List>
+  } else {
+    list = <List>
+    {this.state.characteristics.map(Ch_name => (  
+      <ListItem button key={Ch_name.name}>   
+        {`${Ch_name.name}`}
+        <a>&nbsp;</a><input type='text'/>
+        <Divider/>
+        </ListItem>
+    ))}
+  </List>
+  }
+
   return (
 
     <div className="App">
@@ -230,7 +265,7 @@ render() {
           <h3>Smart Shop</h3>
       </header>
   
-      <div class="App-content">
+      <div class="contentApp">
   
   
       <div>
@@ -254,16 +289,8 @@ render() {
               <input class='input_search' type='text'/>
             </ListItem>
             <Divider/> 
-              {this.state.categories.map(Category => (
-                
-                <ListItem button key={Category.name} 
-                ><Divider/>
-                  
-                  {`${Category.name}`}
-                  <Divider/>
-                  </ListItem>
-              ))}
-            
+           
+              {list}
             <Divider/> 
    
   
