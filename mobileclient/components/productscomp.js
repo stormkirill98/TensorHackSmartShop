@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, Text, TextInput, FlatList, StyleSheet, TouchableHighlight, Button} from 'react-native';
+import {View, Text, TextInput, FlatList, StyleSheet, TouchableHighlight, Button } from 'react-native';
 import {categoryRequester, characteristicRequester, purchaseRequester} from 'data-requester';
+import RNPickerSelect from 'react-native-picker-select';
 
 class Products extends React.Component {
   constructor(props){
@@ -64,30 +65,43 @@ class Products extends React.Component {
   }
 
   itemRenderAboutProducts = ({item}) => {
+    const placeholder = {
+      label: "выберите значение..",
+      value: null,
+      color: '#9EA0A4',
+    };
+    const items = [];
+    for (let i = 0; i < item.enum_values.length; i++) {
+      items.push({label: item.enum_values[i], value: item.enum_ids[i]})
+    }
     return(
         <View style={styles.item}>
           <Text>{item.name}</Text>
-          <TextInput
+          {/* <TextInput
             style={{ height: 40, borderColor: '#dcdcdc', borderWidth: 1, marginVertical: 8}}
             onChangeText={(value) => this.onChangeTextSearchAboutProdct(value, item)}
             value={item.value}
+          /> */}
+          <RNPickerSelect
+            placeholder={placeholder}
+            style={pickerSelectStyles}
+            onValueChange={(value) => this.onChangeTextSearchAboutProdct(value, item)}
+            items={items}
           />
         </View>
     )
   }
 
-  onPressButtonForAddProduct = () => {
-    // let forRequestDataInputAboutProducts;
-    // for(let i=0; i<this.state.dataInputAboutProducts.length; i++){
-    //   forRequestDataInputAboutProducts = this.state.dataInputAboutProducts
-    // }
-    // console.log(forRequestDataInputAboutProducts)
-    
-    purchaseRequester.addPurchase(53, this.state.categoryID, this.state.dataInputAboutProducts)
+  onPressButtonForAddProduct = async () => {
+    const {navigate} =  this.props.navigation;
+    console.log(55, this.state.categoryID, this.state.dataInputAboutProducts, this.state.quantity)
+    await purchaseRequester.addPurchase(55, this.state.categoryID, this.state.dataInputAboutProducts, this.state.quantity)
+    navigate('Purchase', {refresh: 1})  
   } 
 
   render() {
     let list ;
+    
     if (this.state.mode == 1) {
       list = <FlatList
                 data={this.state.dataFoundProducts}
@@ -100,6 +114,21 @@ class Products extends React.Component {
                 title="Добавить продукт"
                 onPress={this.onPressButtonForAddProduct}
               />
+              <Text style={{marginVertical: 8, marginHorizontal: 15}}>Количество:</Text>
+              <View style={styles.item}>
+
+                <TextInput
+                  style={pickerSelectStyles.inputAndroid}
+                  keyboardType = 'numeric'
+                  onChangeText={(value)=> { 
+                    this.setState({
+                      quantity: value
+                    })
+                  }}
+                  value={this.state.quantity}
+                />
+              </View>
+
               <Text style={{marginVertical: 8, marginHorizontal: 15}}>Заполните поля:</Text>
               <FlatList
                 data={this.state.dataInputAboutProducts}
@@ -125,6 +154,7 @@ class Products extends React.Component {
     </View>
     )
   }
+
 
 
     //Поиск в инпуте продукта
@@ -157,6 +187,28 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
   }
+});
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'purple',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
 });
 
 export default Products;
