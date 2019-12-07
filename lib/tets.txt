@@ -1,0 +1,21 @@
+Вход:
+id заметки
+Выход:
+Список из магазинов
+id магазина
+название магазина
+логотип магазина
+products[(название продукта, логотип, цена, цена по акции, характеристики), (), ...]
+
+select *
+from shops
+where shops."_id" in (
+select products_shops.shop_id
+from products_shops
+where products_shops.product_id in (1, 2)
+GROUP BY products_shops.shop_id);
+
+select *
+from products_shops
+where (products_shops.shop_id in (1, 2)) and (products_shops.product_id in (1, 2))
+ORDER BY products_shops.price;
