@@ -1,7 +1,5 @@
 import React from 'react';
-import './App.css';
-import foundDataProducts from './FoundDataProducts.js';
-
+import './styles/App.css';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -22,7 +20,7 @@ var data = {
  getPurchases: function() {
    return [
      {
-       title:'Пятерочка',
+       title:'пятерочка',
        used: true,
        goods:[
          {
@@ -209,10 +207,19 @@ const useStyles = makeStyles({
   },
 });
 
+
+
+
 function SimpleDialog(props) {
   const classes = useStyles();
+  var Shops=data.getPurchases();
+
   const { onClose, selectedValue, open } = props;
 
+  function handleClick(e) {
+    e.preventDefault();
+    console.log('Была нажата ссылка.');
+  };
   const handleClose = () => {
     onClose(selectedValue);
   };
@@ -220,15 +227,15 @@ function SimpleDialog(props) {
   const handleListItemClick = value => {
     onClose(value);
   };
- var Shops = data.getPurchases();
   return (
     
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
       <DialogTitle id="simple-dialog-title">Список магазинов</DialogTitle>
       <List>
       {Shops.map(email => (
-          <ListItem button onClick={() => handleListItemClick(email)} key={email}>
+          <ListItem button onClick={() => handleListItemClick(email)}  key={email}>
             
+            <button onClick={handleClick}></button>
             <ListItemText primary={email.title} />
 
           </ListItem>
@@ -261,6 +268,8 @@ return (
         <h3>Smart Shop</h3>
     </header>
 
+
+
     <div class="App-content">
         <div>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
@@ -268,6 +277,8 @@ return (
       </Button>
       <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
     </div>
+
+
 
         <List className='root' subheader={<li />}>
         {Shop.map(item => (
