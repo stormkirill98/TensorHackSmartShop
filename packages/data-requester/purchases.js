@@ -3,7 +3,7 @@ var api = require('./apiEndpoints');
 const axios = require('axios')
 //[]->characteristics
 async function addPurchase(note_id, category_id, characteristics) {
-    if(!note_id || !usercategory_idname) return
+    if(!note_id || !category_id ) return
     let res ;
 
     try{
