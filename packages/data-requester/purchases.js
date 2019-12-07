@@ -2,7 +2,7 @@ var environment = require('./environment');
 var api = require('./apiEndpoints');
 const axios = require('axios')
 //[]->characteristics
-async function addPurchase(note_id, category_id, characteristics) {
+async function addPurchase(note_id, category_id, characteristics, count) {
     if(!note_id || !category_id ) return
     let res ;
 
@@ -10,6 +10,7 @@ async function addPurchase(note_id, category_id, characteristics) {
         res = await axios.post(environment.SITE_ADDRESS + "/" + api.purchases.n,{
             note_id,
             category_id,
+            count,
             characteristics
         });
     } catch(e) {
