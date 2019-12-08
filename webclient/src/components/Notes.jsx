@@ -49,6 +49,7 @@ export default class Notes extends Component {
     editingRow = () => {
         return <>
             <TextField
+                style={{color: '#fff'}}
                 className='mr-2'
                 variant='outlined'
                 label='Название заметки'
@@ -109,10 +110,10 @@ export default class Notes extends Component {
                             Заметки
                         </Typography>
                         {!this.state.isEditing && <>
-                            <IconButton>
+                            <IconButton color='inherit'>
                                 <AddIcon onClick={() => this.setState({isEditing: true})}/>
                             </IconButton>
-                            <IconButton>
+                            <IconButton color='inherit'>
                                 <ReloadIcon onClick={() => this.refresh()}/>
                             </IconButton>
                         </>}
