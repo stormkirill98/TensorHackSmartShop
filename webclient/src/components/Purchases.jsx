@@ -12,6 +12,7 @@ import Container from '@material-ui/core/Container';
 import Categories from './Categories';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
+import Divider from '@material-ui/core/Divider';
 import Toolbar from '@material-ui/core/Toolbar';
 import {purchaseRequester} from 'data-requester'
 
@@ -39,7 +40,7 @@ export default class Purchases extends Component {
 
     shopRender = (shop) => {
         return <ListItem divider>
-            <div className='d-flex flex-column'  style={{width: '100%'}}>
+            <div className='d-flex flex-column' style={{width: '100%'}}>
                 <Typography variant='h5'>{shop.name}</Typography>
                 <List>
                     {shop.products.map(item => this.productRender(item))}
@@ -47,6 +48,28 @@ export default class Purchases extends Component {
             </div>
         </ListItem>;
     };
+
+    priceRender = (stock_price, price) => {
+        if (stock_price && price) {
+            return <>
+                <Typography variant='substitle2' className="mr-2">{stock_price} ₽</Typography>
+                <Typography variant='caption'><span
+                    style={{textDecoration: 'line-through'}}>{price} ₽</span></Typography>
+            </>
+        } else {
+            return <Typography variant='substitle2' className="mr-2">{stock_price || price} ₽</Typography>
+        }
+    };
+
+    totalPriceRender = () => {
+        return <>
+            <Typography className='ml-3 mt-4' variant='h5' style={{
+                fontWeight: 'bold',
+                textDecoration: 'uppercase'
+            }}>Итого: {this.state.shops.reduce((sum, item) => sum + item.total_price, 0)} ₽</Typography>
+            <Divider/>
+        </>
+    }
 
     productRender = (item) => {
         return <>
@@ -59,20 +82,17 @@ export default class Purchases extends Component {
                         <Typography variant='h6'>{item.name}</Typography>
                         <Typography variant='subtitle1'>{item.characteristics}</Typography>
                         <div>
-                            <Typography variant='substitle2' className="mr-2">{item.stock_price}₽</Typography>
-                            <Typography variant='caption'><span
-                                style={{textDecoration: 'line-through'}}>{item.price}₽</span></Typography>
+                            {this.priceRender(item.stock_price, item.price)}
                         </div>
                     </div>
                 </div>
+                <IconButton style={{position: 'absolute', right: '16px', bottom: '16px'}} aria-label="delete"
+                            onClick={() => {
+                                this.removePurchase(item.purchase_id)
+                            }}>
+                    <DeleteIcon/>
+                </IconButton>
             </ListItem>
-
-            <IconButton style={{position: 'absolute', right: '16px', bottom: '16px'}} aria-label="delete"
-                        onClick={() => {
-                            this.removePurchase(item.purchase_id)
-                        }}>
-                <DeleteIcon/>
-            </IconButton>
         </>
     };
 
@@ -109,6 +129,7 @@ export default class Purchases extends Component {
                 <Button variant="contained" color="primary" onClick={() => this.setState({isSearching: true})}>Добавить
                     продукт</Button>
             </div>
+            {Boolean(this.state.shops.length) && this.totalPriceRender()}
             <List>
                 {this.state.shops.map(item => this.shopRender(item))}
             </List>

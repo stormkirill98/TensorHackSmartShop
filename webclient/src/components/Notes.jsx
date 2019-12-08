@@ -12,6 +12,8 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import AddIcon from '@material-ui/icons/Add';
+import ReloadIcon from '@material-ui/icons/Update';
 import Container from '@material-ui/core/Container';
 import {noteRequester} from 'data-requester';
 
@@ -26,13 +28,17 @@ export default class Notes extends Component {
     }
 
     async componentWillMount() {
-        this.setState({notes: await noteRequester.getNotes()})
+        this.refresh();
     }
+
+    refresh = async () => {
+        this.setState({notes: await noteRequester.getNotes()})
+    };
 
     addNote = async () => {
         const name = this.state.noteName;
         const [{_id}] = await noteRequester.addNote(this.state.noteName, 1);
-        this.setState({name: '', isEditing: '', notes: [{name, _id}, ...this.state.notes]});
+        this.setState({noteName: '', isEditing: '', notes: [{name, _id}, ...this.state.notes]});
     };
 
     removeNote = async (_id) => {
@@ -41,27 +47,31 @@ export default class Notes extends Component {
     };
 
     editingRow = () => {
-        return <div className="d-flex align-items-baseline">
+        return <>
             <TextField
+                style={{color: '#fff'}}
+                className='mr-2'
+                variant='outlined'
+                label='Название заметки'
                 onChange={(event) => this.setState({noteName: event.target.value})}
                 value={this.state.noteName}/>
-            <Button variant="contained" color="primary" onClick={() => this.setState({isEditing: false})}>
+            <Button className='mr-2'
+                    variant="contained" color="primary" onClick={() => this.setState({isEditing: false, noteName: ''})}>
                 Отмена
             </Button>
-            <Button variant="contained" color="primary" onClick={this.addNote}>
+            <Button className='mr-2'
+                    variant="contained" color="primary" onClick={this.addNote}>
                 Добавить
             </Button>
-        </div>
+        </>
     };
 
     itemRender = (item) => {
-        return <ListItem style={{cursor: 'pointer'}} key={item._id} divider onClick={() => this.setState({note: item._id})}>
+        return <ListItem style={{cursor: 'pointer'}} key={item._id} divider onClick={(event) => {
+            event.stopPropagation();
+            this.setState({note: item._id})
+        }}>
             <ListItemText>{item.name}</ListItemText>
-            <IconButton aria-label="delete" onClick={() => {
-                this.removeNote(item._id)
-            }}>
-                <DeleteIcon/>
-            </IconButton>
         </ListItem>
     };
 
@@ -77,8 +87,9 @@ export default class Notes extends Component {
         return <Dialog fullScreen open>
             <AppBar style={{position: 'relative'}}>
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" onClick={() => this.setState({note: ''})} aria-label="close">
-                        <CloseIcon />
+                    <IconButton edge="start" color="inherit" onClick={() => this.setState({note: ''})}
+                                aria-label="close">
+                        <CloseIcon/>
                     </IconButton>
                     <Typography className="ml-2" variant="h6">
                         Покупки
@@ -93,9 +104,21 @@ export default class Notes extends Component {
         return <div>
             <AppBar style={{position: 'relative'}}>
                 <Toolbar>
-                    <Typography className="ml-2" variant="h6">
-                        Заметки
-                    </Typography>
+                    <div className='d-flex align-items-center'>
+
+                        <Typography className="ml-2 mr-2" variant="h6">
+                            Заметки
+                        </Typography>
+                        {!this.state.isEditing && <>
+                            <IconButton color='inherit'>
+                                <AddIcon onClick={() => this.setState({isEditing: true})}/>
+                            </IconButton>
+                            <IconButton color='inherit'>
+                                <ReloadIcon onClick={() => this.refresh()}/>
+                            </IconButton>
+                        </>}
+                        {this.state.isEditing && this.editingRow()}
+                    </div>
                 </Toolbar>
             </AppBar>
             <List>
