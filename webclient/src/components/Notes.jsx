@@ -12,6 +12,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
 import ReloadIcon from '@material-ui/icons/Update';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
@@ -65,11 +66,16 @@ export default class Notes extends Component {
     };
 
     itemRender = (item) => {
-        return <ListItem style={{cursor: 'pointer'}} key={item._id} divider onClick={(event) => {
-            event.stopPropagation();
-            this.setState({note: item._id})
-        }}>
-            <ListItemText>{item.name}</ListItemText>
+        return <ListItem style={{cursor: 'pointer'}} key={item._id} divider>
+            <div style={{width: '100%'}} className='d-flex align-items-center'>
+                <ListItemText style={{flexGrow: 1}} onClick={(event) => {
+                    event.stopPropagation();
+                    this.setState({note: item._id})
+                }}>{item.name}</ListItemText>
+                <IconButton onClick={() => this.removeNote(item._id)}>
+                    <DeleteIcon/>
+                </IconButton>
+            </div>
         </ListItem>
     };
 
