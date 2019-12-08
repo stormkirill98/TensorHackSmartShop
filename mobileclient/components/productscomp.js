@@ -94,9 +94,9 @@ class Products extends React.Component {
 
   onPressButtonForAddProduct = async () => {
     const {navigate} =  this.props.navigation;
-    console.log(55, this.state.categoryID, this.state.dataInputAboutProducts, this.state.quantity)
-    await purchaseRequester.addPurchase(55, this.state.categoryID, this.state.dataInputAboutProducts, this.state.quantity)
-    navigate('Purchase', {refresh: 1})  
+    console.log(this.props.navigation.getParam('noteID'), this.state.categoryID, this.state.dataInputAboutProducts, this.state.quantity)
+    await purchaseRequester.addPurchase(this.props.navigation.getParam('noteID'), this.state.categoryID, this.state.dataInputAboutProducts, this.state.quantity)
+    navigate('Purchase', {refresh: 1, noteID: this.props.navigation.getParam('noteID')})  
   } 
 
   render() {
@@ -143,7 +143,7 @@ class Products extends React.Component {
         <View style={styles.containerSearchCategory}>
           <Text>Найти:</Text>
           <TextInput
-            style={{ height: 50, borderColor: '#dcdcdc', backgroundColor: '#fff', borderWidth: 1, marginVertical: 8}}
+            style={{ height: 50, borderColor: '#dcdcdc', backgroundColor: '#fff', borderWidth: 1, marginVertical: 8, paddingHorizontal: 12}}
             onChangeText={this.onChangeTextSearchProducts}
             value={this.state.str}
           />
