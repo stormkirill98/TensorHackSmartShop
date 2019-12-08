@@ -4,7 +4,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import Dialog from '@material-ui/core/Dialog';
 import Purchases from './Purchases';
@@ -14,7 +13,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import AddIcon from '@material-ui/icons/Add';
 import ReloadIcon from '@material-ui/icons/Update';
-import Container from '@material-ui/core/Container';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import {noteRequester} from 'data-requester';
 
 export default class Notes extends Component {
@@ -55,14 +55,12 @@ export default class Notes extends Component {
                 label='Название заметки'
                 onChange={(event) => this.setState({noteName: event.target.value})}
                 value={this.state.noteName}/>
-            <Button className='mr-2'
-                    variant="contained" color="primary" onClick={() => this.setState({isEditing: false, noteName: ''})}>
-                Отмена
-            </Button>
-            <Button className='mr-2'
-                    variant="contained" color="primary" onClick={this.addNote}>
-                Добавить
-            </Button>
+            <IconButton className='mr-2' color="inherit" onClick={() => this.setState({isEditing: false, noteName: ''})}>
+                <HighlightOffIcon/>
+            </IconButton>
+            <IconButton className='mr-2' color="inherit" onClick={this.addNote}>
+                <CheckCircleOutlineIcon/>
+            </IconButton>
         </>
     };
 
